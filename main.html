@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>홈페이지</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: #fff;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #2e2e2e;
+        }
+        .left-section {
+            display: flex;
+            gap: 15px;
+        }
+        .right-section {
+            display: flex;
+            gap: 15px;
+        }
+        .nickname {
+            color: gold;
+        }
+        .logo-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+        .nav {
+            display: flex;
+            justify-content: center;
+            background-color: #2e2e2e;
+            padding: 10px 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            background-color: #444;
+            border-radius: 5px;
+        }
+        .nav a:hover {
+            background-color: #555;
+        }
+        .button {
+            background-color: #444;
+            border: none;
+            padding: 5px 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+        .betting-section, .maintenance-section, .bet-history-section, .notice-section, .customer-service-section, .write-form-section {
+            padding: 20px;
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #2e2e2e;
+        }
+        table, th, td {
+            border: 1px solid #444;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .betting-section-title, .notice-section-title {
+            font-size: 1.5em;
+            color: orange;
+            margin-bottom: 10px;
+        }
+        .write-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .write-form input, .write-form textarea {
+            padding: 10px;
+            border: 1px solid #444;
+            background-color: #2e2e2e;
+            color: white;
+            border-radius: 5px;
+        }
+        /* 고객센터 제목 스타일 수정 */
+        .customer-service-title {
+            font-size: 1.3em;
+            color: #ffcc00; /* 진한 노란색 */
+            font-weight: bold;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #ffcc00; /* 제목 아래 선 추가 */
+            padding-bottom: 5px;
+        }
+        .response-section {
+            margin-top: 15px;
+            background-color: #444;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 정보 영역 -->
+    <div class="header">
+        <div class="left-section">
+            <!-- PHP로 닉네임 출력 -->
+            <span class="nickname">
+                <?php
+                    session_start();
+                    if (isset($_SESSION['nickname'])) {
+                        echo htmlspecialchars($_SESSION['nickname']);
+                    } else {
+                        echo "로그인 필요";
+                    }
+                ?>
+            </span>
+            <span>보유머니: <b>148원</b></span>
+            <span>배팅중인금액: <b>0원</b></span>
+            <span>포인트: <b>0P</b></span>
+            <button class="button">전환</button>
+        </div>
+        <div class="right-section">
+            <button class="button" id="edit-info">정보수정</button>
+            <button class="button" id="logout">로그아웃</button>
+        </div>
+    </div>
+
+    <!-- 로고 영역 -->
+    <div class="logo-container">
+        <img class="logo" src="logo.png" alt="World Cup Logo">
+    </div>
+
+    <!-- 탭 네비게이션 -->
+    <nav class="nav">
+        <a href="#" id="sports-tab">스포츠</a>
+        <a href="#" id="inplay-tab">인플레이</a>
+        <a href="#" id="minigame-tab">미니게임</a>
+        <a href="#" id="bet-history-tab">배팅내역</a>
+        <a href="#" id="notice-tab">공지사항</a>
+        <a href="#" id="customer-service-tab">고객센터</a>
+        <a href="#">충전</a>
+        <a href="#">환전</a>
+    </nav>
+
+    <!-- 배팅 섹션 -->
+    <div class="betting-section" id="betting-section">
+        <div class="betting-section-title">NBA</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>경기일시</th>
+                    <th>종목</th>
+                    <th>팀1</th>
+                    <th>승리 배당</th>
+                    <th>VS</th>
+                    <th>팀2</th>
+                    <th>패배 배당</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bet-item">
+                    <td>11/26 09:00</td>
+                    <td>승/패</td>
+                    <td>디트로이트</td>
+                    <td>1.50</td>
+                    <td>VS</td>
+                    <td>토론토</td>
+                    <td>2.24</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 배팅내역 섹션 -->
+    <div class="bet-history-section" id="bet-history-section">
+        <div class="betting-section-title">배팅내역</div>
+        <table id="bet-history-table">
+            <thead>
+                <tr>
+                    <th>경기일시</th>
+                    <th>종목</th>
+                    <th>팀1</th>
+                    <th>승리 배당</th>
+                    <th>VS</th>
+                    <th>팀2</th>
+                    <th>패배 배당</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 배팅내역 항목이 여기에 추가됩니다 -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 공지사항 섹션 -->
+    <div class="notice-section" id="notice-section">
+        <div class="notice-section-title">공지사항</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>[첫충전/재충전 이벤트공지]</td>
+                    <td>관리자</td>
+                    <td>19-03-28</td>
+                </tr>
+                <!-- 다른 공지 항목들도 추가 가능 -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 고객센터 섹션 -->
+    <div class="customer-service-section" id="customer-service-section">
+        <div class="notice-section-title">고객센터</div>
+        <button class="button" id="write-button">글쓰기</button>
+        <button class="button" id="delete-button">선택삭제</button>
+        <table id="customer-service-table">
+            <thead>
+                <tr>
+                    <th>선택</th>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                    <th>답변 상태</th> <!-- 새로운 열 추가 -->
+                    <th>답변 보기</th> <!-- 답변 보기 열 추가 -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="no-entries-row">
+                    <td colspan="5">등록된 글이 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 글쓰기 폼 섹션 -->
+    <div class="write-form-section" id="write-form-section">
+        <div class="notice-section-title">글쓰기</div>
+        <div class="write-form">
+            <input type="text" id="write-title" placeholder="제목">
+            <textarea id="write-content" placeholder="내용"></textarea>
+            <button class="button" id="submit-button">작성</button>
+            <button class="button" id="cancel-button">취소</button>
+        </div>
+    </div>
+
+    <script>
+        // 정보수정 버튼 클릭 시
+        document.getElementById('edit-info').addEventListener('click', function () {
+            alert('고객센터로 문의 바랍니다');
+        });
+
+        // 로그아웃 버튼 클릭 시
+        document.getElementById('logout').addEventListener('click', function () {
+            // PHP 세션 종료를 위해 logout.php로 이동
+            window.location.href = 'logout.php';
+        });
+
+        let betHistory = [];
+        let customerEntries = [];
+
+        // 섹션 숨기기 함수
+        function hideAllSections() {
+            document.querySelectorAll('.betting-section, .maintenance-section, .bet-history-section, .notice-section, .customer-service-section, .write-form-section').forEach(function(section) {
+                section.style.display = 'none';
+            });
+        }
+
+        // 스포츠 탭 클릭 시 배팅 섹션 보이기
+        document.getElementById('sports-tab').addEventListener('click', function(event) {
+            event.preventDefault();
+            hideAllSections();
+            document.getElementById('betting-section').style.display = 'block';
+        });
+
+        // 인플레이 및 미니게임 탭 클릭 시 점검 중 알림
+        document.getElementById('inplay-tab').addEventListener('click', function(event) {
+            event.preventDefault();
+            alert('점검 중입니다. 나중에 다시 시도해 주세요.');
+        });
+
+        document.getElementById('minigame-tab').addEventListener('click', function(event) {
+            event.preventDefault();
+            alert('점검 중입니다. 나중에 다시 시도해 주세요.');
+        });
+
+        // 배팅 항목 클릭 시 배팅 정보 저장 및 알림
+        document.querySelectorAll('.bet-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                let betInfo = {
+                    date: item.cells[0].innerText,
+                    type: item.cells[1].innerText,
+                    team1: item.cells[2].innerText,
+                    odds1: item.cells[3].innerText,
+                    vs: item.cells[4].innerText,
+                    team2: item.cells[5].innerText,
+                    odds2: item.cells[6].innerText
+                };
+                betHistory.push(betInfo);
+                alert('배팅 항목 선택됨: ' + betInfo.team1 + ' VS ' + betInfo.team2);
+            });
+        });
+
+        // 배팅내역 탭 클릭 시 배팅내역 표시
+        document.getElementById('bet-history-tab').addEventListener('click', function(event) {
+            event.preventDefault();
+            hideAllSections();
+            document.getElementById('bet-history-section').style.display = 'block';
+            let betHistoryTable = document.getElementById('bet-history-table').getElementsByTagName('tbody')[0];
+            betHistoryTable.innerHTML = ''; // 기존 내용을 지우기
+            betHistory.forEach(function(bet, index) {
+                let row = betHistoryTable.insertRow();
+                row.insertCell(0).innerText = bet.date;
+                row.insertCell(1).innerText = bet.type;
+                row.insertCell(2).innerText = bet.team1;
+                row.insertCell(3).innerText = bet.odds1;
+                row.insertCell(4).innerText = bet.vs;
+                row.insertCell(5).innerText = bet.team2;
+                row.insertCell(6).innerText = bet.odds2;
+            });
+        });
+
+        // 공지사항 탭 클릭 시 공지사항 표시
+        document.getElementById('notice-tab').addEventListener('click', function(event) {
+            event.preventDefault();
+            hideAllSections();
+            document.getElementById('notice-section').style.display = 'block';
+        });
+
+        // 고객센터 테이블의 제목 클릭 시 관리자의 답변 표시
+document.getElementById('customer-service-table').addEventListener('click', function(event) {
+    const target = event.target;
+
+    // 제목 열을 클릭했을 때
+    if (target.tagName === 'TD' && target.cellIndex === 2) {  
+        const row = target.parentElement;  // 클릭된 제목이 있는 행
+        const responseSection = row.querySelector('.response-section');  // 해당 행에 있는 답변 섹션
+
+        if (!responseSection) {
+            // 답변 섹션이 없다면 새로 만듬
+            const newResponseSection = document.createElement('div');
+            newResponseSection.classList.add('response-section');
+
+            // 관리자의 답변을 데이터베이스에서 불러오기 위해 AJAX 요청
+            const supportId = row.cells[1].innerText;  // 글의 ID (번호)
+
+            // AJAX 요청
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "get_reply.php?id=" + supportId, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const adminReply = xhr.responseText;
+                    newResponseSection.innerHTML = `
+                        <strong>관리자 답변:</strong>
+                        <p>${adminReply}</p>
+                    `;
+                    row.appendChild(newResponseSection);  // 답변을 테이블에 추가
+                }
+            };
+            xhr.send();
+        }
+
+                // 답변 섹션 보이기/숨기기
+                responseSection.style.display = responseSection.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+
+        // 글 추가 시 답변 상태를 '답변 대기'로 설정
+        function addCustomerServiceEntry(title) {
+            const customerServiceTable = document.getElementById('customer-service-table').getElementsByTagName('tbody')[0];
+            const newRow = customerServiceTable.insertRow(0);
+            newRow.innerHTML = `
+                <td><input type='checkbox' data-id='new'></td>
+                <td>new</td>
+                <td style="color: #fff; font-weight: bold; text-decoration: underline; cursor: pointer;">${title.length > 10 ? title.substring(0, 10) + '...' : title}</td>
+                <td>사용자</td>
+                <td>${new Date().toLocaleDateString()}</td>
+                <td class="response-status">답변 대기</td> <!-- '답변 대기' 상태 추가 -->
+            `;
+        }
+
+        // 고객센터 탭 클릭 시 고객센터 표시
+    document.getElementById('customer-service-tab').addEventListener('click', function(event) {
+        event.preventDefault();
+        hideAllSections();
+        document.getElementById('customer-service-section').style.display = 'block';
+    });
+
+    // 글쓰기 버튼 클릭 시 글쓰기 폼 표시
+    document.getElementById('write-button').addEventListener('click', function() {
+        hideAllSections();
+        document.getElementById('write-form-section').style.display = 'block';
+    });
+
+    // 작성 버튼 클릭 시 고객센터에 항목 추가
+    document.getElementById('submit-button').addEventListener('click', function() {
+    let title = document.getElementById('write-title').value;
+    let content = document.getElementById('write-content').value;
+
+    if (title && content) {
+        // AJAX 요청을 통해 글 작성 내용을 서버에 전송
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "save_support.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                alert(xhr.responseText);
+
+                // 새 글을 테이블에 추가
+                const customerServiceTable = document.getElementById('customer-service-table').getElementsByTagName('tbody')[0];
+                const newRow = customerServiceTable.insertRow(0);
+                newRow.innerHTML = `
+                    <td><input type='checkbox' data-id='new'></td>
+                    <td>new</td>
+                    <td style="color: #fff; font-weight: bold; text-decoration: underline; cursor: pointer;">${title.length > 10 ? title.substring(0, 10) + '...' : title}</td>
+                    <td>사용자</td>
+                    <td>${new Date().toLocaleDateString()}</td>
+                    <td class="response-status">답변 대기</td> <!-- '답변 대기' 상태 추가 -->
+                `;
+            }
+        };
+        xhr.send(`title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}&author=사용자`);
+    } else {
+        alert('제목과 내용을 모두 입력해 주세요.');
+    }
+});
+
+
+
+    // 취소 버튼 클릭 시 고객센터로 돌아가기
+    document.getElementById('cancel-button').addEventListener('click', function() {
+        hideAllSections();
+        document.getElementById('customer-service-section').style.display = 'block';
+    });
+
+    // 선택삭제 버튼 클릭 시 선택된 항목 삭제
+    document.getElementById('delete-button').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('#customer-service-table tbody input[type="checkbox"]:checked');
+        if (checkboxes.length > 0) {
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                checkboxes.forEach(function(checkbox) {
+                    let index = checkbox.getAttribute('data-index');
+                    customerEntries.splice(index, 1);
+                });
+                updateCustomerServiceTable();
+                alert('선택하신 내용이 삭제되었습니다');
+            }
+        } else {
+            alert('삭제할 항목을 선택해 주세요.');
+        }
+    });
+
+        // 고객센터 테이블 업데이트 함수
+        function updateCustomerServiceTable() {
+            let customerServiceTable = document.getElementById('customer-service-table').getElementsByTagName('tbody')[0];
+            customerServiceTable.innerHTML = '';
+            customerEntries.forEach(function(entry, index) {
+                let row = customerServiceTable.insertRow();
+                let checkboxCell = row.insertCell(0);
+                let checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.setAttribute('data-index', index);
+                checkboxCell.appendChild(checkbox);
+                
+                row.insertCell(1).innerText = index + 1;
+                row.insertCell(2).innerText = entry.title;
+                row.insertCell(3).innerText = entry.author;
+                row.insertCell(4).innerText = entry.date;
+            });
+
+            // 등록된 글이 없을 경우 표시할 항목
+            if (customerEntries.length === 0) {
+                let row = customerServiceTable.insertRow();
+                row.id = 'no-entries-row';
+                let cell = row.insertCell(0);
+                cell.colSpan = 5;
+                cell.innerText = '등록된 글이 없습니다.';
+            }
+        }
+    </script>
+
+</body>
+</html>

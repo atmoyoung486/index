@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 및 회원가입</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fdf7e2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease-in-out;
+        }
+        .header {
+            font-size: 24px;
+            color: #5c4b51;
+            margin-bottom: 20px;
+        }
+        .input-field, .select-field, .button {
+            width: calc(100% - 20px);
+            margin: 10px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #5c4b51;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #47383d;
+        }
+        .link {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #5c4b51;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
+        .success-message {
+            color: green;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="form-header">로그인</div>
+
+        <!-- 로그인 폼 -->
+        <form id="login-form" method="POST" action="login.php">
+            <input type="text" name="username" placeholder="아이디" class="input-field" required>
+            <input type="password" name="password" placeholder="비밀번호" class="input-field" required>
+            <button type="submit" class="button">로그인</button>
+        </form>
+
+        <!-- 회원가입 폼 -->
+        <form id="signup-form" class="hidden" action="signup.php" method="POST">
+            <input type="text" name="username" id="username" placeholder="아이디" class="input-field" required>
+            <p class="error-message" id="username-error">중복된 아이디입니다.</p>
+            <p class="success-message" id="username-success">사용 가능한 아이디입니다.</p>
+            
+            <input type="password" name="password" id="password" placeholder="비밀번호" class="input-field" required>
+            <input type="password" id="confirm-password" placeholder="비밀번호 확인" class="input-field" required>
+            <p class="error-message" id="password-error">비밀번호가 일치하지 않습니다.</p>
+            
+            <input type="text" name="nickname" id="nickname" placeholder="닉네임" class="input-field" required>
+            <p class="error-message" id="nickname-error">중복된 닉네임입니다.</p>
+            <p class="success-message" id="nickname-success">사용 가능한 닉네임입니다.</p>
+            
+            <select name="bank-name" class="select-field" required>
+                <option value="">은행명을 선택하세요</option>
+                <option value="농협중앙회">농협중앙회</option>
+                <option value="지역농축협">지역농축협</option>
+                <option value="기업은행">기업은행</option>
+                <option value="국민은행">국민은행</option>
+                <option value="신한은행">신한은행</option>
+                <option value="우리은행">우리은행</option>
+                <option value="하나은행">하나은행</option>
+                <option value="SC제일은행">SC제일은행</option>
+                <option value="광주은행">광주은행</option>
+                <option value="부산은행">부산은행</option>
+                <option value="전북은행">전북은행</option>
+                <option value="아이엠뱅크(구 대구)">아이엠뱅크(구 대구)</option>
+                <option value="새마을금고">새마을금고</option>
+                <option value="신협중앙회">신협중앙회</option>
+                <option value="카카오뱅크">카카오뱅크 *7777,7942 가입불가</option>
+
+            </select>
+            <input type="text" name="account_number" id="account-number" placeholder="계좌번호" class="input-field" required>
+            <p class="error-message" id="account-number-error">계좌번호는 숫자만 입력 가능합니다.</p>
+            
+            <input type="text" name="phone_number" id="phone-number" placeholder="전화번호" class="input-field" required>
+            <p class="error-message" id="phone-error">중복된 전화번호입니다.</p>
+            <p class="success-message" id="phone-success">사용 가능한 전화번호입니다.</p>
+            
+            <input type="text" name="referral_code" id="referral-code" placeholder="추천인 코드" class="input-field" required>
+            <p class="error-message" id="referral-code-error">추천인 코드는 필수 입력 항목입니다.</p>
+            
+            <button type="submit" class="button">회원가입</button>
+            <button type="button" class="button" id="cancel-signup">취소</button>
+        </form>
+
+        <!-- 폼 전환 링크 -->
+        <a class="link" id="toggle-signup">회원가입</a>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const toggleSignup = document.getElementById('toggle-signup');
+        const cancelSignup = document.getElementById('cancel-signup');
+        const formHeader = document.getElementById('form-header');
+
+        const passwordField = document.getElementById('password');
+        const confirmPasswordField = document.getElementById('confirm-password');
+        const passwordError = document.getElementById('password-error');
+
+        const usernameField = document.getElementById('username');
+        const nicknameField = document.getElementById('nickname');
+        const phoneField = document.getElementById('phone-number');
+        const accountNumberField = document.getElementById('account-number');
+
+        const usernameError = document.getElementById('username-error');
+        const nicknameError = document.getElementById('nickname-error');
+        const phoneError = document.getElementById('phone-error');
+        const accountNumberError = document.getElementById('account-number-error');
+
+        const usernameSuccess = document.getElementById('username-success');
+        const nicknameSuccess = document.getElementById('nickname-success');
+        const phoneSuccess = document.getElementById('phone-success');
+
+        toggleSignup.addEventListener('click', () => {
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+            formHeader.textContent = '회원가입';
+            toggleSignup.style.display = 'none';
+        });
+
+        cancelSignup.addEventListener('click', () => {
+            signupForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            formHeader.textContent = '로그인';
+            toggleSignup.style.display = 'block';
+        });
+
+        // 비밀번호 확인 기능
+        const validatePasswords = () => {
+            if (passwordField.value !== confirmPasswordField.value) {
+                passwordError.style.display = 'block';
+            } else {
+                passwordError.style.display = 'none';
+            }
+        };
+
+        passwordField.addEventListener('input', validatePasswords);
+        confirmPasswordField.addEventListener('input', validatePasswords);
+
+        // 숫자만 입력 검증
+        accountNumberField.addEventListener('input', () => {
+            const value = accountNumberField.value;
+            if (!/^\d*$/.test(value)) {
+                accountNumberError.style.display = 'block';
+            } else {
+                accountNumberError.style.display = 'none';
+            }
+        });
+
+        // 중복 확인 기능
+        const checkDuplicate = (field, value, errorField, successField) => {
+            if (!value) {
+                errorField.style.display = 'none';
+                successField.style.display = 'none';
+                return;
+            }
+
+            fetch('check_duplicate.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ field, value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    successField.style.display = 'none';
+                    errorField.style.display = 'block';
+                } else {
+                    errorField.style.display = 'none';
+                    successField.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('중복 확인 에러:', error);
+            });
+        };
+
+        usernameField.addEventListener('input', () => checkDuplicate('username', usernameField.value, usernameError, usernameSuccess));
+        nicknameField.addEventListener('input', () => checkDuplicate('nickname', nicknameField.value, nicknameError, nicknameSuccess));
+        phoneField.addEventListener('input', () => checkDuplicate('phone_number', phoneField.value, phoneError, phoneSuccess));
+    </script>
+</body>
+</html>
